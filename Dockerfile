@@ -1,12 +1,13 @@
-FROM java:jre
-MAINTAINER Jacek Kowalski <Jacek@jacekk.info>
+FROM sjatgutzmann/docker.centos.oraclejava8
+
+MAINTAINER Sven Jörns <sjatgutzmann@gmail.com>
 
 ENV GITBLIT_VERSION 1.8.0
 
-RUN apt-get update \
-	&& apt-get dist-upgrade -y \
-	&& apt-get install -y git-core sudo wget \
-	&& apt-get clean
+RUN yum update \
+	&& yum -y dist-upgrade -y \
+	&& yum -y install git-core sudo wget \
+	&& yum -y clean
 
 # Install Gitblit
 
