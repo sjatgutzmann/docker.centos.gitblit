@@ -14,25 +14,40 @@ WORKDIR /opt
 RUN wget -O /tmp/gitblit.tar.gz http://dl.bintray.com/gitblit/releases/gitblit-${GITBLIT_VERSION}.tar.gz \
 	&& tar xzf /tmp/gitblit.tar.gz \
 	&& rm -f /tmp/gitblit.tar.gz \
-	&& ln -s gitblit-${GITBLIT_VERSION} gitblit \
-	&& mv gitblit/data gitblit-data-initial \
-	&& mkdir gitblit-data
-RUN groupadd -r -g 500 gitblit \
-	&& useradd -r -d /opt/gitblit-data -u 500 -g 500 gitblit \
-	&& chown -Rf gitblit:gitblit /opt/gitblit-*
+	&& mv gitblit-${GITBLIT_VERSION} gitblit \ 
+	&& ln -s gitblit gitblit-${GITBLIT_VERSION} \
+	&& mv gitblit/data gitblit/data-initial 
+#	&& mkdir gitblit-data
 
-# Adjust the default Gitblit settings to bind to 8080, 8443, 9418, 29418, and allow RPC administration.
+# checking in run.sh, if is data into data, if not, copy it
+# https://github.com/docker/docker/issues/2259
+# workaround: chmod 777
+VOLUME /opt/gitblit/data
+RUN chmod 777 /opt/gitblit/data
+# user rights allways from host and with init this, it get root
+ENV GITBLIT_USER gitblit
+ENV GITBLIT_GROUP gitblit
+ENV GITBLIT_HOME /opt/gitblit
+RUN groupadd -r -g 500 ${GITBLIT_GROUP} \
+	&& useradd -r -d ${GITBLIT_HOME} -u 500 -g 500 ${GITBLIT_USER} \
+	&& chown -Rf ${GITBLIT_USER}:${GITBLIT_GROUP} ${GITBLIT_HOME}
 
-RUN echo "server.httpPort=8080" >> gitblit-data-initial/gitblit.properties \
-	&& echo "server.httpsPort=8443" >> gitblit-data-initial/gitblit.properties \
-	&& echo "web.enableRpcManagement=true" >> gitblit-data-initial/gitblit.properties \
-	&& echo "web.enableRpcAdministration=true" >> gitblit-data-initial/gitblit.properties
-
-# Setup the Docker container environment and run Gitblit
-
-VOLUME /opt/gitblit-data
-EXPOSE 8080 8443 9418 29418
-
-WORKDIR /opt/gitblit
 COPY run.sh /run.sh
-CMD /run.sh
+USER ${GITBLIT_USER}
+# Adjust the default Gitblit settings to bind to 8080, 8443, 9418, 29418, and allow RPC administration.
+# list of possible properties http://gitblit.com/properties.html
+ENV HTTP_PORT 9080
+ENV HTTPS_PORT 9443
+# Enable Ticketservice
+ENV TICKET_SERVICE com.gitblit.tickets.BranchTicketService
+RUN echo "server.httpPort=${HTTP_PORT}" >> gitblit/data-initial/gitblit.properties \
+	&& echo "server.httpsPort=${HTTPS_PORT}" >> gitblit/data-initial/gitblit.properties \
+	&& echo "web.enableRpcManagement=true" >> gitblit/data-initial/gitblit.properties \
+	&& echo "web.enableRpcAdministration=true" >> gitblit/data-initial/gitblit.properties \
+	&& echo "tickets.service=${TICKET_SERVICE}" >> gitblit/data-initial/gitblit.properties
+
+EXPOSE ${HTTP_PORT} ${HTTPS_PORT} 9418 29418
+
+WORKDIR ${GITBLIT_HOME}
+USER root
+ENTRYPOINT /run.sh
