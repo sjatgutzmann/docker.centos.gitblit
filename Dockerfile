@@ -4,10 +4,9 @@ MAINTAINER Sven Jörns <sjatgutzmann@gmail.com>
 
 ENV GITBLIT_VERSION 1.8.0
 
-RUN yum update \
-	&& yum -y dist-upgrade -y \
-	&& yum -y install git-core sudo wget \
-	&& yum -y clean
+RUN yum -y update; yum clean all \
+ && yum -y install git \
+ && yum clean all
 
 # Install Gitblit
 
