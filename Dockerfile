@@ -47,10 +47,10 @@ ENV FEDERATION_PASS gitblitdefault20161223
 ENV FEDERATION1_MIRROR true
 ENV FEDERATION1_BARE true
 ENV FEDERATION1_MERGE_ACCOUNTS true
-ENV FEDERATION1_URL https://tomcat.gitblit.com/gitblit
+ENV FEDERATION1_URL https://dev.gitblit.com
 ENV FEDERATION1_TOKEN 6f3b8a24bf970f17289b234284c94f43eb42f0e4
 ENV FEDERATION1_TIME="120 mins"
-ENV FEDERATION1_FOLDER="tomcat"
+ENV FEDERATION1_FOLDER="gitblit"
 #bypass certificate verification
 RUN git config --global --bool --add http.sslVerify false
 
