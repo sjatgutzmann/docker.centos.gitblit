@@ -41,14 +41,18 @@ ENV HTTP_PORT 9080
 ENV HTTPS_PORT 9443
 # Enable Ticketservice
 ENV TICKET_SERVICE com.gitblit.tickets.BranchTicketService
+# set passfrase of this gitblit server -> generate a token to access this server
 ENV FEDERATION_PASS gitblitdefault20161223
-RUN echo "server.httpPort=${HTTP_PORT}" >> gitblit/data-initial/gitblit.properties \
-	&& echo "server.httpsPort=${HTTPS_PORT}" >> gitblit/data-initial/gitblit.properties \
-	&& echo "web.enableRpcManagement=true" >> gitblit/data-initial/gitblit.properties \
-	&& echo "web.enableRpcAdministration=true" >> gitblit/data-initial/gitblit.properties \
-	&& echo "git.enableGitServlet=true" >> gitblit/data-initial/gitblit.properties \
-	&& echo "federation.passphrase=${FEDERATION_PASS}" >> gitblit/data-initial/gitblit.properties \
-	&& echo "tickets.service=${TICKET_SERVICE}" >> gitblit/data-initial/gitblit.properties
+# properties to connect to another gitblit server
+ENV FEDERATION1_MIRROR true
+ENV FEDERATION1_BARE true
+ENV FEDERATION1_MERGE_ACCOUNTS true
+ENV FEDERATION1_URL https://tomcat.gitblit.com/gitblit
+ENV FEDERATION1_TOKEN 6f3b8a24bf970f17289b234284c94f43eb42f0e4
+ENV FEDERATION1_TIME="120 mins"
+ENV FEDERATION1_FOLDER="tomcat"
+#bypass certificate verification
+RUN git config --global --bool --add http.sslVerify false
 
 EXPOSE ${HTTP_PORT} ${HTTPS_PORT} 9418 29418
 
