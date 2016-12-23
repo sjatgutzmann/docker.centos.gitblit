@@ -1,3 +1,4 @@
+#!Dockerfile
 FROM sjatgutzmann/docker.centos.oraclejava8
 
 MAINTAINER Sven Jörns <sjatgutzmann@gmail.com>
@@ -40,10 +41,13 @@ ENV HTTP_PORT 9080
 ENV HTTPS_PORT 9443
 # Enable Ticketservice
 ENV TICKET_SERVICE com.gitblit.tickets.BranchTicketService
+ENV FEDERATION_PASS gitblitdefault20161223
 RUN echo "server.httpPort=${HTTP_PORT}" >> gitblit/data-initial/gitblit.properties \
 	&& echo "server.httpsPort=${HTTPS_PORT}" >> gitblit/data-initial/gitblit.properties \
 	&& echo "web.enableRpcManagement=true" >> gitblit/data-initial/gitblit.properties \
 	&& echo "web.enableRpcAdministration=true" >> gitblit/data-initial/gitblit.properties \
+	&& echo "git.enableGitServlet=true" >> gitblit/data-initial/gitblit.properties \
+	&& echo "federation.passphrase=${FEDERATION_PASS}" >> gitblit/data-initial/gitblit.properties \
 	&& echo "tickets.service=${TICKET_SERVICE}" >> gitblit/data-initial/gitblit.properties
 
 EXPOSE ${HTTP_PORT} ${HTTPS_PORT} 9418 29418
