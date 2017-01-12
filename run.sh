@@ -9,7 +9,7 @@ if [ ! -f $GITBLIT_HOME/data/gitblit.properties ]; then
         && echo "git.enableGitServlet=true" >> $GITBLIT_HOME/data-initial/gitblit.properties \
         && echo "federation.passphrase=${FEDERATION_PASS}" >> $GITBLIT_HOME/data-initial/gitblit.properties \
         && echo "tickets.service=${TICKET_SERVICE}" >> $GITBLIT_HOME/data-initial/gitblit.properties
-	if [ $FEDERATION1_MIRROR ]; then
+	if [ $FEDERATION1_BARE ]; then
 		mirrorNr=1
 		echo "federation.${mirrorNr}.url = ${FEDERATION1_URL}" >> $GITBLIT_HOME/data-initial/gitblit.properties \
 		&& echo "federation.${mirrorNr}.token = ${FEDERATION1_TOKEN}" >> $GITBLIT_HOME/data-initial/gitblit.properties \

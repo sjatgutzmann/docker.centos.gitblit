@@ -44,7 +44,7 @@ ENV TICKET_SERVICE com.gitblit.tickets.BranchTicketService
 # set passfrase of this gitblit server -> generate a token to access this server
 ENV FEDERATION_PASS gitblitdefault20161223
 # properties to connect to another gitblit server
-ENV FEDERATION1_MIRROR true
+ENV FEDERATION1_MIRROR false
 ENV FEDERATION1_BARE true
 ENV FEDERATION1_MERGE_ACCOUNTS true
 ENV FEDERATION1_URL https://dev.gitblit.com
